@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="padding_pequeno">8dp</dimen>
+    <dimen name="padding_medio">16dp</dimen>
+
+    <dimen name="card_size">100dp</dimen>
+    <dimen name="card_max_size">150dp</dimen>
+    <dimen name="imagem_local_size">200dp</dimen>
+</resources>

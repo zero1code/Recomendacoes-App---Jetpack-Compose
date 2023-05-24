@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Recomendacoes</string>
+
+
+    <string name="minha_cidade">Minha Cidade</string>
+    <string name="recomendacoes">Recomendações</string>
+    <string name="detalhes_local">Detalhes</string>
+
+    <string name="button_voltar">Voltar</string>
+
+    <string name="recomendacao_cabecalho">Aqui estão alguns dos principais %s de São Paulo.</string>
+    <string name="sobre_o_local">Sobre o local</string>
+</resources>
