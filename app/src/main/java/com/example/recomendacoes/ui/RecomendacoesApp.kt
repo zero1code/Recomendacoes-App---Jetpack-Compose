@@ -17,6 +17,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -33,6 +35,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.recomendacoes.R
+import com.example.recomendacoes.ui.utils.RecomendacoesTipoConteudo
 
 
 enum class RecomendacoesTela(@StringRes val titulo: Int) {
@@ -80,6 +83,7 @@ fun HomeScreenTopbar(
 @Composable
 fun RecomendacoesApp(
     modifier: Modifier = Modifier,
+    windowSize: WindowWidthSizeClass,
     viewModel: RecomendacoesViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
@@ -87,6 +91,13 @@ fun RecomendacoesApp(
     val telaAtual = RecomendacoesTela.valueOf(
         pilhaDeTela?.destination?.route ?: RecomendacoesTela.Home.name
     )
+
+    val tipoConteudo = when(windowSize) {
+        WindowWidthSizeClass.Compact -> RecomendacoesTipoConteudo.SOMENTE_LISTA
+        WindowWidthSizeClass.Medium -> RecomendacoesTipoConteudo.SOMENTE_LISTA
+        WindowWidthSizeClass.Expanded -> RecomendacoesTipoConteudo.LISTA_E_DETALHES
+        else -> RecomendacoesTipoConteudo.SOMENTE_LISTA
+    }
 
     Scaffold(
         topBar = {
@@ -118,11 +129,15 @@ fun RecomendacoesApp(
 
             composable(route = RecomendacoesTela.Recomendacoes.name) {
                 RecomendacoesScreen(
+                    tipoConteudo = tipoConteudo,
                     uiState = uiState,
                     onRecomendacaoCardPressed = { recomendacao ->
                         viewModel.updateRecomendacaoSelecionada(recomendacao)
-                        navController.navigate(RecomendacoesTela.Detalhes.name)
-                    } )
+                        if (tipoConteudo == RecomendacoesTipoConteudo.SOMENTE_LISTA) {
+                            navController.navigate(RecomendacoesTela.Detalhes.name)
+                        }
+                    }
+                )
             }
             
             composable(route = RecomendacoesTela.Detalhes.name) {

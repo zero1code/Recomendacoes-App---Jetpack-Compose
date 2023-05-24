@@ -44,18 +44,43 @@ import androidx.compose.ui.unit.dp
 import com.example.recomendacoes.R
 import com.example.recomendacoes.model.Recomendacao
 import com.example.recomendacoes.ui.theme.RecomendacoesTheme
+import com.example.recomendacoes.ui.utils.RecomendacoesTipoConteudo
 
 @Composable
 fun RecomendacoesScreen(
+    tipoConteudo: RecomendacoesTipoConteudo,
     modifier: Modifier = Modifier,
     uiState: RecomendacoesUiState,
     onRecomendacaoCardPressed: (Recomendacao) -> Unit
 ) {
-    ListaRecomendacao(
+    RecomendacoesConteudo(
+        tipoConteudo = tipoConteudo,
         modifier = modifier,
         uiState = uiState,
         onRecomendacaoCardPressed = onRecomendacaoCardPressed
     )
+}
+
+@Composable
+fun RecomendacoesConteudo(
+    tipoConteudo: RecomendacoesTipoConteudo,
+    modifier: Modifier = Modifier,
+    uiState: RecomendacoesUiState,
+    onRecomendacaoCardPressed: (Recomendacao) -> Unit
+) {
+    if (tipoConteudo == RecomendacoesTipoConteudo.SOMENTE_LISTA) {
+        ListaRecomendacao(
+            modifier = modifier,
+            uiState = uiState,
+            onRecomendacaoCardPressed = onRecomendacaoCardPressed
+        )
+    } else {
+        ListaDetalhesRecomendacao(
+            tipoConteudo = tipoConteudo,
+            uiState = uiState,
+            onRecomendacaoCardPressed = onRecomendacaoCardPressed
+        )
+    }
 }
 
 @Composable
@@ -201,6 +226,44 @@ fun Visualizacoes(
             modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_pequeno)),
             text = "${quantidade}k",
             style = MaterialTheme.typography.labelMedium
+        )
+    }
+}
+
+@Composable
+fun ListaDetalhesRecomendacao(
+    modifier: Modifier = Modifier,
+    tipoConteudo: RecomendacoesTipoConteudo,
+    uiState: RecomendacoesUiState,
+    onRecomendacaoCardPressed: (Recomendacao) -> Unit
+) {
+    val listaRecomendacao = uiState.listaRecomendacao
+    Row(modifier = modifier) {
+        LazyColumn(
+            modifier = modifier
+                .weight(1f),
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medio)),
+            contentPadding = PaddingValues(dimensionResource(id = R.dimen.padding_medio))
+        ) {
+            item {
+                RecomendacaoCabecalho(
+                    categoriaSelecionada = uiState.categoriaSelecionada.nomeCategoria.lowercase()
+                )
+            }
+            items(listaRecomendacao, key = { recomendacao -> recomendacao.nome }) { recomendacao ->
+                RecomendacaoItem(
+                    recomendacao = recomendacao,
+                    onCardClick = {
+                        onRecomendacaoCardPressed(recomendacao)
+                    }
+                )
+            }
+        }
+        DetalhesScreen(
+            modifier = Modifier.weight(1f),
+            tipoConteudo = tipoConteudo,
+            uiState = uiState,
+            onTopicoCardPressed = {}
         )
     }
 }

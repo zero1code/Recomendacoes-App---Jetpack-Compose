@@ -27,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -37,12 +38,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
+import androidx.compose.ui.unit.dp
 import com.example.recomendacoes.R
 import com.example.recomendacoes.ui.theme.RecomendacoesTheme
+import com.example.recomendacoes.ui.utils.RecomendacoesTipoConteudo
 
 @Composable
 fun DetalhesScreen(
     modifier: Modifier = Modifier,
+    tipoConteudo: RecomendacoesTipoConteudo = RecomendacoesTipoConteudo.SOMENTE_LISTA,
     uiState: RecomendacoesUiState,
     onTopicoCardPressed: (String) -> Unit
 ) {
@@ -53,6 +57,7 @@ fun DetalhesScreen(
             .verticalScroll(rememberScrollState())
     ) {
         ImagemNomeLocal(
+            tipoConteudo = tipoConteudo,
             imagemLocal = recomendacao.imagemLocal,
             nomeLocal = recomendacao.nome
         )
@@ -87,9 +92,12 @@ fun DetalhesScreen(
 @Composable
 fun ImagemNomeLocal(
     modifier: Modifier = Modifier,
+    tipoConteudo: RecomendacoesTipoConteudo,
     @DrawableRes imagemLocal: Int,
     nomeLocal: String
 ) {
+    val padding = if (tipoConteudo == RecomendacoesTipoConteudo.SOMENTE_LISTA) 0.dp
+        else dimensionResource(id = R.dimen.padding_pequeno)
     val gradient = Brush.verticalGradient(
         colors = listOf(Color.Transparent, Color(0xE6000000)),
         startY = 300f,
@@ -101,7 +109,9 @@ fun ImagemNomeLocal(
 
         Image(
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .padding(start = padding)
+                .clip(RoundedCornerShape(padding)),
             painter = painterResource(id = imagemLocal),
             contentDescription = null,
             contentScale = ContentScale.Crop
@@ -116,10 +126,14 @@ fun ImagemNomeLocal(
                     )
                 }
         )
+        val textPadding =
+            if (tipoConteudo == RecomendacoesTipoConteudo.SOMENTE_LISTA)
+                dimensionResource(id = R.dimen.padding_pequeno)
+            else dimensionResource(id = R.dimen.padding_medio)
         Text(
             modifier = Modifier
                 .align(Alignment.BottomStart)
-                .padding(dimensionResource(id = R.dimen.padding_pequeno)),
+                .padding(textPadding),
             text = nomeLocal,
             color = MaterialTheme.colorScheme.onPrimary
         )
@@ -210,23 +224,16 @@ fun DescricaoLocal(
     }
 }
 
-@Preview(showSystemUi = false)
+@Preview(showSystemUi = false, widthDp = 1000)
 @Composable
 fun DetalhesScreenPreview() {
     RecomendacoesTheme {
         Surface {
             Column() {
-                InformacaoLocal(
-                    topico = "Topico",
-                    valor = "Endereco",
-                    icone = Icons.Filled.OpenInNew,
-                    onCardClick = {}
-                )
-                InformacaoLocal(
-                    topico = "Topico",
-                    valor = "Endereco",
-                    icone = Icons.Filled.LocationOn,
-                    onCardClick = {}
+                ImagemNomeLocal(
+                    tipoConteudo = RecomendacoesTipoConteudo.LISTA_E_DETALHES,
+                    imagemLocal = R.drawable.cinema_eldorado,
+                    nomeLocal = "Nome Local"
                 )
             }
         }

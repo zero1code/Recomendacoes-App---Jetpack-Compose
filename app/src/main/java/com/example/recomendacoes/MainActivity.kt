@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -15,31 +17,18 @@ import com.example.recomendacoes.ui.RecomendacoesApp
 import com.example.recomendacoes.ui.theme.RecomendacoesTheme
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             RecomendacoesTheme {
-                // A surface container using the 'background' color from the theme
+                val windowSize = calculateWindowSizeClass(activity = this)
                 Surface {
-                    RecomendacoesApp()
+                    RecomendacoesApp(
+                        windowSize = windowSize.widthSizeClass
+                    )
                 }
             }
         }
-    }
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun RecomendacoesAppLightCompactPreview() {
-    RecomendacoesTheme {
-        RecomendacoesApp()
-    }
-}
-
-@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun RecomendacoesAppDarkCompactPreview() {
-    RecomendacoesTheme {
-        RecomendacoesApp()
     }
 }

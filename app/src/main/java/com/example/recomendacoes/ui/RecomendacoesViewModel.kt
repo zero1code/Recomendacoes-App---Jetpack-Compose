@@ -32,9 +32,11 @@ class RecomendacoesViewModel() : ViewModel() {
     }
 
     fun updateCategoriaSelecionada(categoria: Categoria) {
+        val primeiraRecomendacao = LocalDataProvider.allCategorias[categoria.nomeCategoria]!![0]
         _uiState.update {
             it.copy(
                 categoriaSelecionada = categoria,
+                recomendacaoSelecionada = primeiraRecomendacao,
                 estaMostrandoHomeScreen = false
             )
         }
@@ -43,7 +45,7 @@ class RecomendacoesViewModel() : ViewModel() {
     fun updateRecomendacaoSelecionada(recomendacao: Recomendacao) {
         _uiState.update {
             it.copy(
-                recomendacaoSelecionada = recomendacao
+                recomendacaoSelecionada = recomendacao,
             )
         }
     }
